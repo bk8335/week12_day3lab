@@ -1,7 +1,8 @@
-var requestHelper = require('../helper/requestHelper.js')
+var RequestHelper = require('../helper/requestHelper.js')
 var Country = require('./country.js');
 
 var CountryRequest = function() {
+  this.requestHelper = new RequestHelper();
 }
 
 
@@ -9,9 +10,7 @@ CountryRequest.prototype = {
 
   all: function(callback){
     this.requestHelper.makeRequest("http://localhost:3000/seeds", function(results){
-      console.log(results);
       var countries = this.populateCountries(results);
-      console.log(countries);
       callback(countries);
     }.bind(this));
 

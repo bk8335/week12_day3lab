@@ -4,4 +4,7 @@ var app = function(){
   new UI();
 }
 
+console.log("app has been hit")
+
+
 window.addEventListener('load', app);

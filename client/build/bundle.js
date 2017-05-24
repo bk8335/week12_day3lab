@@ -101,6 +101,7 @@ var requestHelper = __webpack_require__(0)
 
 
 var UI = function() {
+  console.log("UI has been hit")
   var countries = new countryRequest();
   countries.all(function(countries){
     this.render(countries);
@@ -110,14 +111,26 @@ var UI = function() {
 
 UI.prototype = {
 
+  createText: function(text, label){
+    var p = document.createElement('p');
+    p.innerText = label + text;
+    return p;
+  },
+
+  appendText: function(element, text, label){
+    var pTag = this.createText(text, label);
+    element.appendChild(pTag);
+  },
+
   render: function(countries) {
     var container = document.getElementById('countries');
     container.innerHTML='';
     for(var country of countries){
+      console.log(country)
       var li = document.createElement('li');
       this.appendText(li, country.name, 'Country name: ');
+      container.appendChild(li)
     }
-    container.appendChild(li)
   }
 
 }
@@ -134,6 +147,9 @@ var UI = __webpack_require__(1);
 var app = function(){
   new UI();
 }
+
+console.log("app has been hit")
+
 
 window.addEventListener('load', app);
 
@@ -153,10 +169,11 @@ module.exports = Country;
 /* 4 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var requestHelper = __webpack_require__(0)
+var RequestHelper = __webpack_require__(0)
 var Country = __webpack_require__(3);
 
 var CountryRequest = function() {
+  this.requestHelper = new RequestHelper();
 }
 
 
@@ -164,9 +181,7 @@ CountryRequest.prototype = {
 
   all: function(callback){
     this.requestHelper.makeRequest("http://localhost:3000/seeds", function(results){
-      console.log(results);
       var countries = this.populateCountries(results);
-      console.log(countries);
       callback(countries);
     }.bind(this));
 
