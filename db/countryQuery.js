@@ -15,6 +15,19 @@ CountryQuery.prototype = {
         });
       }
     });
+  },
+
+  addCountry:function(){
+    
+    var input = document.getElementById('button');
+    input.addEventListener("click", function(){
+
+      var countryToAdd = document.getElementById("country-dropdown")
+      var collection = db.collection('countries');
+      collection.insert(countryToAdd.value)
+    })
+    
+
   }
 
 }

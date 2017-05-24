@@ -43,11 +43,11 @@ UI.prototype = {
     var container = document.getElementById('country-dropdown');
     container.innerHTML='';
     for(var country of apiCountries){
-      console.log('api has been hit')
       var option = document.createElement('option');
       this.appendText(option, country.name, '');
       container.appendChild(option)
     }
+    console.log("Container value = " + container.value);
   }
 
 }

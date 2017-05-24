@@ -63,42 +63,17 @@
 /******/ 	__webpack_require__.p = "";
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 2);
+/******/ 	return __webpack_require__(__webpack_require__.s = 135);
 /******/ })
 /************************************************************************/
-/******/ ([
-/* 0 */
-/***/ (function(module, exports) {
+/******/ ({
 
-var Helper = function() {
-
-}
-
-Helper.prototype = {
-
-  makeRequest: function(url, callback){
-    var request = new XMLHttpRequest();
-    request.open("GET", url);
-    request.addEventListener("load", function(){
-      if(request.status !== 200) return;
-      var jsonString = request.responseText;
-      var resultsObject = JSON.parse(jsonString);
-      callback(resultsObject)
-    });
-    request.send();
-  }
-
-}
-
-module.exports = Helper;
-
-/***/ }),
-/* 1 */
+/***/ 134:
 /***/ (function(module, exports, __webpack_require__) {
 
-var countryRequest = __webpack_require__(4)
-var apiRequest = __webpack_require__(5)
-var requestHelper = __webpack_require__(0)
+var countryRequest = __webpack_require__(137)
+var apiRequest = __webpack_require__(136)
+var requestHelper = __webpack_require__(68)
 
 
 var UI = function() {
@@ -141,11 +116,11 @@ UI.prototype = {
     var container = document.getElementById('country-dropdown');
     container.innerHTML='';
     for(var country of apiCountries){
-      console.log('api has been hit')
       var option = document.createElement('option');
       this.appendText(option, country.name, '');
       container.appendChild(option)
     }
+    console.log("Container value = " + container.value);
   }
 
 }
@@ -154,10 +129,11 @@ UI.prototype = {
 module.exports = UI;
 
 /***/ }),
-/* 2 */
+
+/***/ 135:
 /***/ (function(module, exports, __webpack_require__) {
 
-var UI = __webpack_require__(1);
+var UI = __webpack_require__(134);
 
 var app = function(){
   new UI();
@@ -169,23 +145,46 @@ console.log("app has been hit")
 window.addEventListener('load', app);
 
 /***/ }),
-/* 3 */
-/***/ (function(module, exports) {
 
-var Country = function(options){
+/***/ 136:
+/***/ (function(module, exports, __webpack_require__) {
 
-  this.name = options.name;
+var RequestHelper = __webpack_require__(68)
+var Country = __webpack_require__(91);
+
+var ApiRequest = function() {
+  this.requestHelper = new RequestHelper();
+}
+
+
+ApiRequest.prototype = {
+
+  all: function(callback){
+    this.requestHelper.makeRequest("https://restcountries.eu/rest/v2", function(results){
+      var countries = this.populateCountries(results);
+      callback(countries);
+    }.bind(this));
+
+  },
+
+  populateCountries: function(results){
+    var countries = results.map(function(resultObject){
+      return new Country(resultObject);
+    })
+    return countries
+  }
 
 }
 
-module.exports = Country;
+module.exports = ApiRequest;
 
 /***/ }),
-/* 4 */
+
+/***/ 137:
 /***/ (function(module, exports, __webpack_require__) {
 
-var RequestHelper = __webpack_require__(0)
-var Country = __webpack_require__(3);
+var RequestHelper = __webpack_require__(68)
+var Country = __webpack_require__(91);
 
 var CountryRequest = function() {
   this.requestHelper = new RequestHelper();
@@ -216,38 +215,46 @@ module.exports = CountryRequest;
 
 
 /***/ }),
-/* 5 */
-/***/ (function(module, exports, __webpack_require__) {
 
-var RequestHelper = __webpack_require__(0)
-var Country = __webpack_require__(3);
+/***/ 68:
+/***/ (function(module, exports) {
 
-var ApiRequest = function() {
-  this.requestHelper = new RequestHelper();
+var Helper = function() {
+
 }
 
+Helper.prototype = {
 
-ApiRequest.prototype = {
-
-  all: function(callback){
-    this.requestHelper.makeRequest("https://restcountries.eu/rest/v2", function(results){
-      var countries = this.populateCountries(results);
-      callback(countries);
-    }.bind(this));
-
-  },
-
-  populateCountries: function(results){
-    var countries = results.map(function(resultObject){
-      return new Country(resultObject);
-    })
-    return countries
+  makeRequest: function(url, callback){
+    var request = new XMLHttpRequest();
+    request.open("GET", url);
+    request.addEventListener("load", function(){
+      if(request.status !== 200) return;
+      var jsonString = request.responseText;
+      var resultsObject = JSON.parse(jsonString);
+      callback(resultsObject)
+    });
+    request.send();
   }
 
 }
 
-module.exports = ApiRequest;
+module.exports = Helper;
+
+/***/ }),
+
+/***/ 91:
+/***/ (function(module, exports) {
+
+var Country = function(options){
+
+  this.name = options.name;
+
+}
+
+module.exports = Country;
 
 /***/ })
-/******/ ]);
+
+/******/ });
 //# sourceMappingURL=bundle.js.map
