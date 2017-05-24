@@ -97,14 +97,18 @@ module.exports = Helper;
 /***/ (function(module, exports, __webpack_require__) {
 
 var countryRequest = __webpack_require__(4)
+var apiRequest = __webpack_require__(5)
 var requestHelper = __webpack_require__(0)
 
 
 var UI = function() {
-  console.log("UI has been hit")
   var countries = new countryRequest();
+  var apiCountries = new apiRequest();
   countries.all(function(countries){
     this.render(countries);
+  }.bind(this))
+  apiCountries.all(function(apiCountries){
+    this.renderDropdown(apiCountries);
   }.bind(this))
 }
 
@@ -130,6 +134,17 @@ UI.prototype = {
       var li = document.createElement('li');
       this.appendText(li, country.name, 'Country name: ');
       container.appendChild(li)
+    }
+  },
+
+  renderDropdown: function(apiCountries){
+    var container = document.getElementById('country-dropdown');
+    container.innerHTML='';
+    for(var country of apiCountries){
+      console.log('api has been hit')
+      var option = document.createElement('option');
+      this.appendText(option, country.name, '');
+      container.appendChild(option)
     }
   }
 
@@ -199,6 +214,39 @@ CountryRequest.prototype = {
 module.exports = CountryRequest;
 
 
+
+/***/ }),
+/* 5 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var RequestHelper = __webpack_require__(0)
+var Country = __webpack_require__(3);
+
+var ApiRequest = function() {
+  this.requestHelper = new RequestHelper();
+}
+
+
+ApiRequest.prototype = {
+
+  all: function(callback){
+    this.requestHelper.makeRequest("https://restcountries.eu/rest/v2", function(results){
+      var countries = this.populateCountries(results);
+      callback(countries);
+    }.bind(this));
+
+  },
+
+  populateCountries: function(results){
+    var countries = results.map(function(resultObject){
+      return new Country(resultObject);
+    })
+    return countries
+  }
+
+}
+
+module.exports = ApiRequest;
 
 /***/ })
 /******/ ]);

@@ -1,12 +1,16 @@
 var countryRequest = require('../models/countryRequest.js')
+var apiRequest = require('../models/apiRequest.js')
 var requestHelper = require('../helper/requestHelper.js')
 
 
 var UI = function() {
-  console.log("UI has been hit")
   var countries = new countryRequest();
+  var apiCountries = new apiRequest();
   countries.all(function(countries){
     this.render(countries);
+  }.bind(this))
+  apiCountries.all(function(apiCountries){
+    this.renderDropdown(apiCountries);
   }.bind(this))
 }
 
@@ -32,6 +36,17 @@ UI.prototype = {
       var li = document.createElement('li');
       this.appendText(li, country.name, 'Country name: ');
       container.appendChild(li)
+    }
+  },
+
+  renderDropdown: function(apiCountries){
+    var container = document.getElementById('country-dropdown');
+    container.innerHTML='';
+    for(var country of apiCountries){
+      console.log('api has been hit')
+      var option = document.createElement('option');
+      this.appendText(option, country.name, '');
+      container.appendChild(option)
     }
   }
 
